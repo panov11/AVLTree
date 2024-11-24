@@ -1,164 +1,158 @@
-מסמך תיעוד
-מימוש עץ AVL מתבסס על שני מחלקות: AVLNode ו-AVLTree.
-מחלקת AVLNode מייצגת צומת בעץ AVL. להלן תיאור הפונקציות במחלקה:
- :Init
-בפונקציה זו אנחנו משתמשים בבנאי ונותנים לו מפתח וערך שייצגו את הצומת, מאתחלים
-משתנים כמו ילד ימני, ילד שמאלי, הורה וגובה.
- :get_leŌ/right
-פונקציות אלו מקבלות מצביע לצומת ומחזירות מיהו הבן ימני/שמאלי של אותו צומת, במידה
-וערך הצומת הוא None מייצר צומת ויר טואלי.
-:get_parent
-פונקציה זו מקבלת מצביע לצומת ומחזירה מצביע אל ההורה במידה וקיים אחרת מחזיר
- .None
- :get_key/value
-פונקציות אלו מקבלות מצביע לצומת ומחזירה את המפתח/ערך שלו, במידה והצומת הוא
-None או צומת וירטואלי מחזיר None.
- :get_height
-פונקציה זו מקבלת מצביע לצומת ומחזירה מהו הגובה שלו, במידה והצומת הוא וירטואלי
-מחזיר .-1
-:Is_real_node
-פונקציה זו מקבלת מצביע לצומת ומחזירה האם הצומת הוא וירטואלי או לא.
- :Delete_Node_Only
-פונקציה זו מקבלת מצביע לצומת ועץ AVL. פונקציה זו מוחקת את הצומת עליו היא מצביעה.
-פונקציה זו קוראת לפונקציי ת עזר Successor שבמחלקת AVLTree,הפונקציה מקבלת גם
-מצביע לצומת ועץ AVL ומחזירה את היורש של הצומת עליו מצביעה. פונקציה זו קוראת
-לפונקציית עזר Min אשר ב מחלקת AVLTree, הפונקציה מקבלת מצביע לצומת ועץ AVL
-ומוצאת את האיבר המינימלי של תת העץ אשר מכיל את הצומת. הפונקציה Min יורדת לילד
-השמאלי עד אשר מגיעה לעלה. הסיבוכיות היא (logn(O שכן המקרה הגרוע הוא להתחיל
-מהשורש ולרדת עד לעלה. הפונקציה Succeseeor מחזירה את המינימום של בן ימני במקרה
-ויש לו בן שמאלי, אחרת עולה במעלה העץ עד שמגיע לצומת שיש לו בן שמאלי. פעולה זו
-לוקחת גם במקרה הגרוע (logn(O כאשר מחפשים מינימום של בן ימני או שיכול להיות
-שנתחיל מעלה ונעלה עד לשורש על מנת למצוא יורש. לכן הסיבוכיות של מחיקת צומת היא
-(logn(O, ישנם המקרים הפשוטים שבהם משנים את הפוינטרים בהתאם למקרה וזה לוקח
-(1)O אך במקרים בהם לצומת יש 2 ילדים אנחנו מחפשים את היורש שזה יכול לקחת
-(logn(O ולאחר מכן משנים את הפוינטרים של היורש, ההורה של הצומת וההורה של היורש,
-וזה לוקח עוד (1)O ולכן הסיבוכיות היא (logn(O. 
-:Balance_Factor
-פונקציה זו מקבלת מצביע אל הצומת ומחזירה את factor balance של הצומת כפי שהגדרנו
-בכיתה. אנחנו לוקחים את שדה הגובה של הילד השמאלי והימני ומחזירים את ההפרש
-ביניהם. סיבוכיות של הפונקציה היא (1)O שכן גישה אל השדה של צומת לוקחת זמן קבוע.
-:update_height
-פונקציה זו מקבלת מצביע אל הצומת, בודקת אם אינו צומת וירטואלי. במידה ולא היא נגשת
-אל שדה הגובה של הבן הימני והשמאלי ומחשבת את הגובה לפי הגדרה של גובה של צומת
-בעץ. לאחר מכן ניגשים לשדה הגובה של הצומת ובודקים האם הוא שונה מערך הגובה
-שחישבנו, במידה וכן מעדכנים את גובה הצומת, פונקציה זו נועדה לעדכן את הגובה של
-הצומת לאחר שינויים כמו גלגול או מחיקה בעץ. הסיבוכיות היא (1)O שכן לגשת אל שדה של
-הצומת וילדיו לוקח זמן קבוע.
-מחלקת AVLTree:
-מחלקה זו מייצגת עץ AVL. להלן הפונקציות במחלקה זו:
- :Init
-בפונקציה זו אנחנו בונים את העץ, מאתחלים שדה של שורש וגודל. לוקח (1)O.
- :search
-בפונקציה זו אנחנו מקבלים עץ ומפתחת ומבצעים חיפוש האם קיים צומת עם אותו מפתח.
-החיפוש מתחיל מהשורש ובכל פעם הולכים לבן ימני או שמאלי בהתאם למפתח . הסיבוכיות
-היא (logn(O שכן במקרה הגרוע הצומת בעל אותו מפתח נמצא בעלה או שלא נמצא כלל
-בעץ ולכן מבצע פעולות כג ובה העץ שהוא logn.
- :Insert
-בפונקציה זו אנחנו מקבלים עץ, מפתח וערך. מבצעים הכנסה של צומת בעל המפתח והערך
-לעץ ומחזירים את מספר הפעולות שנדרשו לאזן את העץ לאחר הכנסה . אנחנו נעזרים
-בפונקציות עזר כמו init של המחלקה AVLNode, Factor_Balance, height_update ושהן
-כולן בעלות סיבוכיות של (1)O.תחילה מבצעים חיפוש לאן להכניס את הצומת, ה הכנסה
-מתבצעת בעלה ולכן לוקחת (logn(O. לאחר מכן מתחילים מאותו צומת לעלות כלפי מעלה
-ולבצע רוטציות ועדכון גבהים על מנת לאזן את העץ. אנחנו קוראים לפונקציות עזר
-RightRotaƟon/LeŌRotaƟon אשר מקבלות עץ ומצביע לצומת ומבצעות רוטציה, פונקציות
-אלו לוקחות זמן (1)O שכן מבצעים בהן שינוי של פוינטרים בלבד וזה לוקח זמן קבוע. כאשר
-עולים מעלה אנחנו נדרש לכל היותר גלגול אחד או גלגול כפול אבל כיוון שלא ידוע היכן נדרש
-ואם בכלל אנחנו עלולים לעלות חזרה אל השורש במקרה הגרוע וזה לוקח (logn(O. ולכן
-בסך הכל הסיבוכיות היא (logn(O.
- :Delete
-בפונקציה זו אנחנו מקבלים עץ ומצביע אל צומת. אנחנו מבצעים מחיקה של אותו הצומת
-ומחזירים את מספר פעולות האיזון הנדרשות . פונקציה זו קוראת לפונקצי ית עזר
-Only_Node_Delete אשר מבצעת מחיקה של הצומת והיא לוקחת במקרה הגרוע (logn(O.
-לאחר מכן מתחילים מההורה של הצומת שנמחק פיזית ועולים למעלה ומבצעים פעולות 
-איזון. אנחנו קוראים לפונקציות עזר RightRotaƟon/LeŌRotaƟon אשר מקבלות עץ ומצביע
-לצומת ומבצעות רוטציה, פונקציות אלו לוקחות זמן (1)O שכן מבצעים בהן שינוי של
-פוינטרים בלבד וזה לוקח זמן קבוע. במחיקה אנחנו לא יודעים כמה גלגולים דרושים ולכן
-במקרה הגרוע נעלה עד לשורש וזה יכול לקחת במקרה הגרוע (logn(O.
- :avl_to_array
-פונקציה זו מקבל עץ AVL ומחזירה רשימה של איברי העץ בצורה ממוינת. פונקציה זו
-משתמש ת ברקורסיה וליתר דיוק באלגוריתם order in אשר עוברת על כל איברי העץ
-והסיבוכיות היא (n(O.
-:size
-פונקציה זו מקבלת עץ ומחזירה מה גודלו של העץ. פונקציה זו קוראת לפונקצי ית עזר
-.O(n) היא הסיבוכיות ולכן avl_to_array
-:split
-הפונקציה מקבלת צומת בעץ שלפיו אנו מפצלים את העץ לשני תתי עצים וללא הצומת הנ"ל.
-ניצור שני תתי עצים, בתת עץ אחד נכניס כשורש את הבן השמאלי של הצומת והוא יהיה
-התת עץ של האיברים בעלי המפתחות הקטנים ממפתח הצומת. בתת העץ השני נכניס
-כשורש את הבן הימני והוא יהיה התת עץ של האיברים בעלי המפתחות הגדולים ממפתח
-הצומת. נרוץ במעלה המסלול מהצומת אל השורש של העץ המקורי. בכל צומת שעולים
-נבדוק אם הבן השמאלי שלו הוא הצומת שקיבלנו בקלט. במידה וכן נבנה תת עץ נוסף ונכניס
-לתוכו את הבן הימני ונעשה JOIN ביחד עם התת עץ של האיברים הגדולים מהצומת שקיבלנו
-בקלט. בצורה סימטרית נעשה אותם סדר פעולות רק לבן השמאלי של הצומת ונעשה JOIN
-עם התת עץ של האיברים הקטנים מהצומת בקלט.
-הפונקציה מחזירה רשימה שבה התת עץ של האיברים הקטנים והתת עץ של האיברים
-הגדולים.
-סיבוכיות הריצה היא סכום עלויות הJOIN שאנו מפעילים. כמו שראינו בהרצאה הסכום מגיע
-לסיבוכיות של (logn(O
- :join
-הפונקציה מקבלת עץ נוסף וערכי VALUE,KEY שהם יהיו הצומת שימזג בין העצים. תחילה
-נבדוק מקרי קצה בהם אחד או שניים מהעצים ריק או בעל צומת בודד. במידה וכן המיזוג
-פשוט- אם אחד העצים ריק נכניס את הצומת עם ערכי הקלט לעץ השני ונתאים את השורש
-בעץ הנוכחי התאם. אם אחד העצים בעל צומת אחד נכניס לעץ השני את הצומת עם ערכי
-הקלט ואת הצומת של העץ עם הצומת הבודד.
-במקרה הכללי נשווה בין הגבהים של שורשי שני העצים, נרוץ על העץ הגבוה יות ר עד שנגיע
-לגובה של השורש של העץ השני. נכניס את הצומת עם ערכי הקלט שקיבלנו וניתן לו כשני
-ילדים את השורש של העץ הנמוך יותר ואת הצומת שהגענו אליו בעץ הגבוה יותר.
-לאחר מכן נבצע את איזון העץ באותה צורה בדיוק כמו שעשינו בINSERT
-סיבוכיות הפונקציה היא כמו שלמדנו (logn(O
- :get_root
-פונקציה זו מקבלת עץ ומחזירה את המצביע אל השורש. הסיבוכיות היא (1)O.
-:LeŌRotatoin/RightRotaƟon
-פונקציות אלו מקבלות עץ ומצביע אל צומת. הפונקציות מבצעות גלגול ימינה/שמאלה ואלו
-עוזרת לאזן את העץ. הפונקציה קוראת לפונקצי ית עזר height_update על מנת לעדכן את
-הגבהים של הצמתים שהשתתפו בגלגול. בפונקציה הזו אנחנו רק משנים פוינטרי ם וגם
-בעדכון הגבהים קוראי ם לשדות של הצמתים שהשתתפו בגלגול ולכן הסיבוכיות היא (1)O.
-:Min
-פונקציה זו מקבלת עץ ומצביע אל צומת ומחזירה את האיבר המינימלי של תת העץ במכיל
-את הצומת. בפונקציה זו אנחנו מתחילים מהצומת ויורדים לבן השמאלי עד שמגיעים לעלה.
-במקרה הגרוע מתחילים מ שורש ויורדים לעלה ולכן הסיבוכיות היא (logn(O.
- :Successor
-הפונקציה מקבלת עץ ומצביע לצומת ומחזירה את הצומת שהוא היורש שלו. במידה וילד
-הימני שלו יש בן שמאלי אנחנו מחפשים את הצומת המינימלי של תת העץ של הילד
-השמאלי של הילד הימני של הצומת. פונקציה זו קורא ת לפונקציית עזר Min.במדיה ואין בן
-ימני עולים מעלה עד אשר מוצאים את הצומת במסלול למעלה שיש לו בן שמאלי במסלול.
-הסיבוכיות היא (logn(O , במקרה שבו יש לבן הימני בן שמאלי אז קוראים לפונקצי ית Min
-וזה במקרה הגרוע (logn(O אחרת עולים מעלה וזה במקרה הגרוע (logn(O. 
-תוצאות הניסוי
-תשובה לשאלה :2
-את פעולת הsplit מבצעים בעזרת join וכידוע העלות של join זה הפרש הגבהים פלוס .1
-מכיוון שאנחנו עושים זאת על עץ AVL שידוע שהפרש הגבהים בין תתי העץ של צומת מסוים
-הוא לכל היותר .1 לכן בממוצע פעולות הjoin לא יהיו יקרות כל כך ולכן העלות של join
-אקראי הוא נע בין 2 ל.3
-תשובה לשאלה :3
-כאשר מבצעים פעולת split על איבר מקסימלי של תת העץ השמאלי אנחנו מבצעים פעולת
-join החל מאיבר זה, מכיוון שהוא איבר האמצע של העץ אנחנו בעצם נתחיל מצומת זה
-ונעלה עד לשורש ובכל עלייה מבצעים join ואז כאשר מגיעים לשורש קיבלנו את הפיצול
-הנדרש של עץ אחד המכיל מפתחות קטנים מהצומת והעץ השני שהוא תת עץ ימני של העץ
-מקורי נכיל את כל המפתחות הגדולים מהצומת.
-מספר סידורי i עלות join
-מקסימלי עבור
-split אקראי
-עלות join
-מקסימלי עבור
-split אקראי
-עלות join ממוצע
-עבור split של
-האיבר מקסימלי
-בתת עץ שמאלי
-עלות join
-מקסימלי עבור
-split של איבר
-מקסימלי בתת עץ
-שמאלי
-12 3.1 5 2.66 1
-13 2.72 5 2.3 2
-15 2.54 5 2.76 3
-15 2.923 5 2.909 4
-17 3.066 6 3.230 5
-18 3.071 6 3.23 6
-19 2.705 7 3.2 7
-20 2.578 8 3.133 8
-22 3.052 5 3.166 9
-23 2.894 7 2.9 10
-אישור הארכה של שבוע להגשת הפרוייקט
+# AVL Tree Implementation Documentation
+
+This repository contains an implementation of an **AVL Tree** with the following key components:
+
+- **`AVLNode` Class**: Represents a single node in the AVL tree.
+- **`AVLTree` Class**: Represents the AVL tree itself, containing nodes and methods for managing the tree.
+
+## `AVLNode` Class
+
+The `AVLNode` class defines the structure and behavior of a node in the AVL tree. Below is an overview of its methods:
+
+### **Constructor (`__init__`)**
+Initializes the node with:
+- A **key** and **value**.
+- References to the left child, right child, parent, and height.
+
+---
+
+### **Node Accessors**
+- **`get_left` / `get_right`**: Returns the left or right child of the node. If the child is `None`, returns a virtual node.
+- **`get_parent`**: Returns the parent node if it exists; otherwise, returns `None`.
+- **`get_key` / `get_value`**: Returns the key or value of the node. If the node is virtual or `None`, returns `None`.
+- **`get_height`**: Returns the height of the node. If the node is virtual, returns `-1`.
+- **`is_real_node`**: Returns `True` if the node is real (not virtual); otherwise, returns `False`.
+
+---
+
+### **Node Operations**
+- **`delete_node_only`**: Deletes the node by adjusting pointers in the tree. Calls:
+  - **`successor`**: Finds the in-order successor of the node using the `min` helper function.
+  - **`min`**: Finds the minimum node in the subtree. The complexity is \(O(\log n)\).
+
+- **`balance_factor`**: Computes the balance factor (difference in height between the left and right child) of the node. Complexity: \(O(1)\).
+
+- **`update_height`**: Updates the node's height based on its children. Complexity: \(O(1)\).
+
+---
+
+## `AVLTree` Class
+
+The `AVLTree` class implements the AVL tree structure and provides methods to manipulate and query the tree.
+
+### **Constructor (`__init__`)**
+Initializes the AVL tree with:
+- A root node (`None` initially).
+- Size of the tree (`0` initially).
+
+---
+
+### **Tree Operations**
+
+#### **Search**
+- **`search(key)`**: Searches for a node with the given key in the tree.
+- Complexity: \(O(\log n)\) in the worst case.
+
+#### **Insert**
+- **`insert(key, value)`**: Inserts a node with the given key and value into the tree. Balances the tree after insertion.
+- Uses helper methods:
+  - **`balance_factor`**
+  - **`update_height`**
+  - **`left_rotation` / `right_rotation`**
+- Complexity: \(O(\log n)\).
+
+#### **Delete**
+- **`delete(node)`**: Deletes the given node and balances the tree.
+- Uses:
+  - **`delete_node_only`**
+  - **`left_rotation` / `right_rotation`**
+- Complexity: \(O(\log n)\).
+
+#### **Conversion to Array**
+- **`avl_to_array()`**: Converts the tree into a sorted array using an in-order traversal.
+- Complexity: \(O(n)\).
+
+#### **Get Size**
+- **`size()`**: Returns the number of nodes in the tree. Uses the `avl_to_array` helper. Complexity: \(O(n)\).
+
+#### **Split**
+- **`split(node)`**: Splits the tree into two subtrees based on the given node:
+  - The left subtree contains all keys less than the node's key.
+  - The right subtree contains all keys greater than the node's key.
+- Uses the **`join`** operation for reconstruction.
+- Complexity: \(O(\log n)\).
+
+#### **Join**
+- **`join(other_tree, key, value)`**: Merges the current tree with another tree using a new node (key, value) as the root.
+- Adjusts the tree balance using rotations.
+- Complexity: \(O(\log n)\).
+
+#### **Get Root**
+- **`get_root()`**: Returns the root of the tree. Complexity: \(O(1)\).
+
+---
+
+### **Rotations**
+- **`left_rotation(node)` / `right_rotation(node)`**:
+  - Balances the tree by rotating nodes left or right.
+  - Updates the heights of the affected nodes.
+  - Complexity: \(O(1)\).
+
+---
+
+### **Helper Functions**
+- **`min(node)`**: Finds the minimum node in the subtree rooted at the given node.
+  - Complexity: \(O(\log n)\).
+
+- **`successor(node)`**: Finds the in-order successor of the given node.
+  - Complexity: \(O(\log n)\).
+
+---
+
+## **Complexity Summary**
+
+| Operation                  | Complexity    |
+|----------------------------|---------------|
+| Search                     | \(O(\log n)\) |
+| Insert                     | \(O(\log n)\) |
+| Delete                     | \(O(\log n)\) |
+| Convert to Array           | \(O(n)\)      |
+| Get Size                   | \(O(n)\)      |
+| Split                      | \(O(\log n)\) |
+| Join                       | \(O(\log n)\) |
+| Rotations                  | \(O(1)\)      |
+| Min / Successor            | \(O(\log n)\) |
+
+---
+
+## **Experimental Results**
+
+### **Split Analysis**
+The cost of splitting is influenced by the cost of performing `join` operations. Since AVL trees maintain a height difference of at most 1 between subtrees, the cost of a `join` operation is low on average.
+
+#### **Key Observations**
+1. **Random Splits:**  
+   The average cost of a `join` operation ranges between **2 and 3**.
+2. **Maximal Split Cost:**  
+   For maximal splits (e.g., splitting on the largest node in the left subtree), the process involves repeated `join` operations while traversing to the root. This results in higher costs, but they are still \(O(\log n)\) due to the height constraint.
+
+---
+
+### **Table: Experimental Costs**
+
+| Split ID | Random Join Cost | Maximal Join Cost | Average Join Cost (Maximal Split) |
+|----------|------------------|-------------------|-----------------------------------|
+| 12       | 3.1              | 5                 | 2.66                              |
+| 13       | 2.72             | 5                 | 2.3                               |
+| 15       | 2.54             | 5                 | 2.76                              |
+| 17       | 3.066            | 6                 | 3.230                             |
+| 19       | 2.705            | 7                 | 3.2                               |
+| 22       | 3.052            | 5                 | 3.166                             |
+
+---
+
+### **How to Use**
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/<your-repo-url>/AVLTree.git
+   cd AVLTree
